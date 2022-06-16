@@ -1,12 +1,13 @@
-import { HttpClientModule } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-import { AppComponent } from './app.component';
-import { HttpService } from './http.service';
-import { SearchComponent } from './search/search.component';
+/* tslint:disable:no-unused-variable */
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
 
-let httpService: HttpService;
+import { TableComponent } from './table.component';
+import { of } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterTestingModule } from '@angular/router/testing';
+import { PaginationComponent } from './pagination/pagination.component';
 
 const users = [{
   "login": "hello",
@@ -93,56 +94,84 @@ const users = [{
   "score": 1.0
 }];
 
-const payload = {
-  total_count: 6,
-  incomplete_results: true,
-  items: users
-};
+describe('TableComponent', () => {
+  let component: TableComponent;
+  let fixture: ComponentFixture<TableComponent>;
 
-describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
         HttpClientModule
       ],
-      declarations: [
-        AppComponent,
-        SearchComponent
-      ],
-      providers: [HttpService]
-    }).compileComponents();
+      declarations: [TableComponent, PaginationComponent]
+    })
+      .compileComponents();
+  }));
 
-    httpService = TestBed.get(HttpService);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TableComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'github_search'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('github_search');
+  it('should ngOnInit', () => {
+    component.data = users;
+    component.pageSize = 2;
+
+    component.ngOnInit();
+
+    expect(component.items.length).toBe(1);
+
   });
 
-  it('getUsers', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
+  it('should call next', () => {
+    component.data = users;
+    component.pageSize = 2;
 
-    spyOn(httpService, 'getUsers').and.returnValue(of(payload))
+    component.next();
 
-    const hit = app.getUsers('test334');
+    expect(component.nextDisable).toBeTruthy();
+
+  });
+
+  it('should call next', () => {
+    component.data = users;
+    component.pageSize = 2;
+
+    component.next();
+
+    expect(component.nextDisable).toBeTruthy();
+
+  });
+
+  it('should call next', () => {
+    component.data = users;
+    component.pageSize = 2;
+
+    component.next();
+
+    expect(component.nextDisable).toBeTruthy();
+
+  });
 
 
-  })
+  it('should call previoud', () => {
+    component.data = users;
+    component.pageSize = 2;
 
-  // it('should render title', () => {
-  //   const fixture = TestBed.createComponent(AppComponent);
-  //   fixture.detectChanges();
-  //   const compiled = fixture.nativeElement as HTMLElement;
-  //   // expect(compiled.querySelector('.content span')?.textContent).toContain('github_search app is running!');
-  // });
+    component.next();
+
+    expect(component.nextDisable).toBeTruthy();
+
+    expect(component.previousDisable).toBeFalsy();
+
+  });
+
+
 });
